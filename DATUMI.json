@@ -1,0 +1,205 @@
+{
+   "grades": [
+      {
+         "class": "MAT",
+         "type": "written",
+         "fixing": false,
+         "date": "1.1.1111",
+         "classroom": "M1",
+         "time": 3,
+         "reminder_days": 1,
+         "material": "test"
+      },
+      {
+         "class": "MAT",
+         "type": "written",
+         "fixing": false,
+         "date": "1.1.1111",
+         "classroom": "M1",
+         "time": 3,
+         "reminder_days": 1,
+         "material": "test"
+      },
+      {
+         "class": "MAT",
+         "type": "written",
+         "fixing": false,
+         "date": "1.1.1111",
+         "classroom": "M1",
+         "time": 3,
+         "reminder_days": 1,
+         "material": "test"
+      },
+      {
+         "class": "MAT",
+         "type": "written",
+         "fixing": false,
+         "date": "1.1.1111",
+         "classroom": "M1",
+         "time": 3,
+         "reminder_days": 1,
+         "material": "test"
+      },
+      {
+         "class": "MAT",
+         "type": "written",
+         "fixing": false,
+         "date": "1.1.1111",
+         "classroom": "M1",
+         "time": 3,
+         "reminder_days": 1,
+         "material": "test"
+      },
+      {
+         "class": "MAT",
+         "type": "written",
+         "fixing": false,
+         "date": "1.1.1111",
+         "classroom": "M1",
+         "time": 3,
+         "reminder_days": 1,
+         "material": "test"
+      },
+      {
+         "class": "MAT",
+         "type": "written",
+         "fixing": false,
+         "date": "1.1.1111",
+         "classroom": "M1",
+         "time": 3,
+         "reminder_days": 1,
+         "material": "test"
+      },
+      {
+         "class": "MAT",
+         "type": "written",
+         "fixing": false,
+         "date": "1.1.1111",
+         "classroom": "M1",
+         "time": 3,
+         "reminder_days": 1,
+         "material": "test"
+      },
+      {
+         "class": "MAT",
+         "type": "written",
+         "fixing": false,
+         "date": "1.1.1111",
+         "classroom": "M1",
+         "time": 3,
+         "reminder_days": 1,
+         "material": "test"
+      },
+      {
+         "class": "MAT",
+         "type": "written",
+         "fixing": false,
+         "date": "1.1.1111",
+         "classroom": "M1",
+         "time": 3,
+         "reminder_days": 1,
+         "material": "test"
+      },
+      {
+         "class": "MAT",
+         "type": "written",
+         "fixing": false,
+         "date": "1.1.1111",
+         "classroom": "M1",
+         "time": 3,
+         "reminder_days": 1,
+         "material": "test"
+      },
+      {
+         "class": "MAT",
+         "type": "written",
+         "fixing": false,
+         "date": "1.1.1111",
+         "classroom": "M1",
+         "time": 3,
+         "reminder_days": 1,
+         "material": "test"
+      },
+      {
+         "class": "MAT",
+         "type": "written",
+         "fixing": false,
+         "date": "1.1.1111",
+         "classroom": "M1",
+         "time": 3,
+         "reminder_days": 1,
+         "material": "test"
+      },
+      {
+         "class": "MAT",
+         "type": "written",
+         "fixing": false,
+         "date": "1.1.1111",
+         "classroom": "M1",
+         "time": 3,
+         "reminder_days": 1,
+         "material": "test"
+      },
+      {
+         "class": "MAT",
+         "type": "written",
+         "fixing": false,
+         "date": "1.1.1111",
+         "classroom": "M1",
+         "time": 3,
+         "reminder_days": 1,
+         "material": "test"
+      },
+      {
+         "class": "MAT",
+         "type": "written",
+         "fixing": false,
+         "date": "1.1.1111",
+         "classroom": "M1",
+         "time": 3,
+         "reminder_days": 1,
+         "material": "test"
+      },
+      {
+         "class": "MAT",
+         "type": "written",
+         "fixing": false,
+         "date": "1.1.1111",
+         "classroom": "M1",
+         "time": 3,
+         "reminder_days": 1,
+         "material": "test"
+      },
+      {
+         "class": "MAT",
+         "type": "written",
+         "fixing": false,
+         "date": "1.1.1111",
+         "classroom": "M1",
+         "time": 3,
+         "reminder_days": 1,
+         "material": "test"
+      },
+      {
+         "class": "MAT",
+         "type": "written",
+         "fixing": false,
+         "date": "1.1.1111",
+         "classroom": "M1",
+         "time": 3,
+         "reminder_days": 1,
+         "material": "test"
+      },
+      {
+         "class": "MAT",
+         "type": "written",
+         "fixing": false,
+         "date": "1.1.1111",
+         "classroom": "M1",
+         "time": 3,
+         "reminder_days": 1,
+         "material": "test"
+      }
+   ],
+   "other": []
+}
