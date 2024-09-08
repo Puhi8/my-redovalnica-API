@@ -12,6 +12,7 @@ app.use(bodyParser.urlencoded({ extended: false }))
 //DATA
 let massage
 const typeMap = new Map(require("./src/typeMapArrays"))
+const singleFieldValues = ["iEstimate", "endedGrade"/*, "homework"*/] 
 let allClassesArray = require("./src/classes")
 const mainItemNameMap = new Map([
    ["grades", "OCENE"],
@@ -141,11 +142,13 @@ function combineOldWithNew(newData) {
    let oldData = getDataFor(newData.file)
 
    let noChanges = false
+   const myClass = newData.class
+   const category = newData.data.category
    //handel future dates
    if (newData.file == "dates") {
       switch (newData.type) {
          case "delete":
-            oldData[newData.data.category].splice(newData.data.index, 1)
+            oldData[category].splice(newData.data.index, 1)
             break
          default:
             oldData[typeMap.get(newData.type)].push(newData.data)
@@ -153,39 +156,39 @@ function combineOldWithNew(newData) {
    }
    else if (newData.file == "grades") {
       //check if the class exists
-      if (!oldData[newData.class]) oldData = createClass(newData.class)
+      if (!oldData[myClass]) oldData = createClass(myClass)
       switch (newData.type) {
          case "delete":
-            if (newData.data.category == "iEstimate" || newData.data.category == "endedGrade") oldData[newData.class][newData.data.category] = null
-            else oldData[newData.class][newData.data.category].splice(newData.data.index, 1)
+            if (singleFieldValues.includes(category)) oldData[myClass][category] = null
+            else oldData[myClass][category].splice(newData.data.index, 1)
             break
          case "edit":
-            if (newData.data.category == "iEstimate" || newData.data.category == "endedGrade") oldData[newData.class][newData.data.category] = newData.data.newData
-            else oldData[newData.class][newData.data.category][newData.data.index] = newData.data.newData
+            if (singleFieldValues.includes(category)) oldData[myClass][category] = newData.data.newData
+            else oldData[myClass][category][newData.data.index] = newData.data.newData
             break
          case "iEstimate":
          case "endedGrade":
-            if (typeof (newData.data.grade) == "number") oldData[newData.class][newData.type] = newData.data.grade
+            if (typeof (newData.data.grade) == "number") oldData[myClass][newData.type] = newData.data.grade
             else {
                massage = "The final grade has to be a number."
                noChanges = true
             }
             break
          case "teacher":
-            oldData[newData.class].teacher = newData.data
+            oldData[myClass].teacher = newData.data
             break
          case "gradeTalkFixed":
          case "gradeWrittenFixed":
             newData.data.isSecondHalf = checkIfDateIsInSecondHalf(newData.data.dateFixed)
             let index = newData.data.indexFixed
-            if (!oldData[newData.class].grades[index]) {
+            if (!oldData[myClass].grades[index]) {
                massage = "Grade does not exist"
                return
             }
             delete newData.data.indexFixed
-            let oldGradeObject = oldData[newData.class].grades[index]
+            let oldGradeObject = oldData[myClass].grades[index]
             let fixGradeData = newData.data
-            oldData[newData.class].grades[index] = {
+            oldData[myClass].grades[index] = {
                ...oldGradeObject,
                ...fixGradeData,
                wasFixed: true
@@ -193,7 +196,7 @@ function combineOldWithNew(newData) {
             break
          default:
             newData.data.isSecondHalf = checkIfDateIsInSecondHalf(newData.data.date)
-            oldData[newData.class][typeMap.get(newData.type)].push(newData.data)
+            oldData[myClass][typeMap.get(newData.type)].push(newData.data)
       }
    }
    else massage = "Not right file."
