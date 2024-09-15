@@ -72,7 +72,7 @@ module.exports = {
    smallGrade:{
       "grade": null,
       "date": "",
-      "reason":""
+      "reason": ""
    },
    homework:{
       "date": ""

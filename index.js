@@ -1,23 +1,33 @@
-const express = require("express")
 const fs = require("fs")
+const path = require('path')
+const cors = require('cors')
+const express = require("express")
 const bodyParser = require('body-parser')
-const templates = require("./src/template")
-const dataFieldsNeeded = require("./src/dataFieldsNeeded")
 const PORT = 9999
 const app = express()
 
-app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({ extended: false }))
 
-//DATA
-let massage
+/// DATA
+// for writing to main json
+const writeFileTimeoutDuration = 300000
+const numberOfRequestsToWriteFileRequired = 10
+let writeFileTimeout
+let numberOfRequestsToWriteFile = 0
+// maps
 const typeMap = new Map(require("./src/typeMapArrays"))
-const singleFieldValues = ["iEstimate", "endedGrade"/*, "homework"*/] 
-let allClassesArray = require("./src/classes")
 const mainItemNameMap = new Map([
    ["grades", "OCENE"],
    ["dates", "DATUMI"]
 ])
+// arrays
+let allClassesArray = require("./src/classes")
+const singleFieldValues = ["iEstimate", "endedGrade"]
+// objects
+const templates = require("./src/template")
+const dataFieldsNeeded = require("./src/dataFieldsNeeded")
+// random
+let massage
+let server
 
 const getDataFor = (itemFor) => {
    return JSON.parse(
@@ -30,6 +40,8 @@ const getDataFor = (itemFor) => {
       })
    )
 }
+// cashed data 
+let DATA = { grades: getDataFor("grades"), dates: getDataFor("dates") }
 
 const createClass = (className) => {
    let data = getDataFor("grades")
@@ -42,54 +54,101 @@ const createClass = (className) => {
    return data
 }
 
-//make it work as an API
+/// server functions
+function writeFileSchedule(typeOfRequest) {
+   switch (typeOfRequest) {
+      case "number":
+         numberOfRequestsToWriteFile++
+         if (numberOfRequestsToWriteFile >= numberOfRequestsToWriteFileRequired) {
+            numberOfRequestsToWriteFile = 0
+            writeToFile()
+            clearTimeout(writeFileTimeout) // prevent the timeout from running, cause the file was written by "number" 
+            break
+         }
+      default:
+         if (writeFileTimeout) clearTimeout(writeFileTimeout)
+         writeFileTimeout = setTimeout(writeToFile, writeFileTimeoutDuration)
+   }
+}
+
+function stopServer(reason) {
+   // stop / shutdown the server controllably
+   if (server) {
+      console.log("Stopping server:", !!reason ? reason : "")
+      writeToFile()
+      server.close((err) => {
+         if (err) console.error(err)
+         else console.log("Proper stop.")
+      })
+   }
+   else console.log("Server is off")
+}
+
+/// make it work as an API
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: false }))
+app.use(express.static(path.join(__dirname, "dist")))
+app.use(cors())
 app.use((req, res, next) => {
    res.header('Access-Control-Allow-Origin', '*')
    res.header('Access-Control-Allow-Methods', 'GET, PUT, POST, DELETE, OPTIONS')
    res.header("Access-Control-Allow-Headers", "Content-Type, Accept, Origin, X-Requested-With")
+   if (req.url != "/STOPSERVER" && req.method == "POST") writeFileSchedule()
    next()
 })
 
-//handle GET
-app.get("/grades", (req, res) => {
+/// handle website
+app.get("/", (req, res) => {
+   res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+})
+
+/// handle GET
+app.get("/api/grades", (req, res) => {
    console.log("GET from grades")
-   res.json(getDataFor("grades"))
+   res.json(DATA.grades)
 })
-app.get("/dates", (req, res) => {
+app.get("/api/dates", (req, res) => {
    console.log("GET from dates")
-   res.json(getDataFor("dates"))
+   res.json(DATA.dates)
 })
-app.get("/allClasses", (req, res) => {
+app.get("/api/allClasses", (req, res) => {
    console.log("GET from allClasses")
    res.json(allClassesArray)
 })
 
-//handle POST
-app.post('/grades', (req, res) => {
+/// handle POST
+app.post('/api/grades', (req, res) => {
+   console.log("POST")   
    massage = ""
    let data = req.body
    combineOldWithNew(data)
-   if(massage){
-      res.json({massage: massage})
-   }
-   else{
+   if (massage) res.json({ massage: massage })
+   else {
       res.status(200)
-      res.json({massage: "all good"})
+      res.json({ massage: "all good" })
    }
 })
-//activate server
-app.listen(PORT, () => {
+
+/// activate server
+server = app.listen(PORT, () => {
    console.log(`Redovalnica API is on port ${PORT}`)
 })
 
+/// extra developer functions
 app.get("/refreshClasses", (req, res) => {
    console.log("Refresh classes")
    allClassesArray = require("./src/classes")
 })
 
+app.get("/STOPSERVER", (req, res) => {
+   console.log("Get from stop server")
+   stopServer("Get request")
+})
+
+
 function combineOldWithNew(newData) {
-   ///check if the data is valid
-   //class
+   /// check if the data is valid
+   // class
    let classIsProper = false
    try {
       newData.class = newData.class.toUpperCase()
@@ -98,23 +157,16 @@ function combineOldWithNew(newData) {
       massage = "Class is not proper."
       return
    }
-
-   allClassesArray.forEach((element) => {
-      if (newData.class == element) {
-         classIsProper = true
-         return
-      }
-   })
-   if (!classIsProper) {
+   if(!allClassesArray.includes(newData.class)){
       massage = "Improper class."
       return
    }
-   //type
+   // type
    if (!dataFieldsNeeded.hasOwnProperty(newData.type)) {
       massage = "The type is not correct."
       return
    }
-   //all data fields
+   // all data fields
    let hasAllNeededDataFields = true
    dataFieldsNeeded.dataSent.forEach(element => {
       if (!newData.hasOwnProperty(element)) {
@@ -130,7 +182,7 @@ function combineOldWithNew(newData) {
          hasAllNeededDataFields = false
          return
       }
-      else if(newData.data[element] == null || newData.data[element] == undefined) {
+      else if (newData.data[element] == null || newData.data[element] == undefined) {
          massage = ("Invalid data for: " + element)
          hasAllNeededDataFields = false
          return
@@ -139,12 +191,12 @@ function combineOldWithNew(newData) {
    if (!hasAllNeededDataFields) return
 
 
-   let oldData = getDataFor(newData.file)
+   let oldData = DATA[newData.file]
 
    let noChanges = false
    const myClass = newData.class
    const category = newData.data.category
-   //handel future dates
+   // handel future dates
    if (newData.file == "dates") {
       switch (newData.type) {
          case "delete":
@@ -155,7 +207,7 @@ function combineOldWithNew(newData) {
       }
    }
    else if (newData.file == "grades") {
-      //check if the class exists
+      // check if the class exists
       if (!oldData[myClass]) oldData = createClass(myClass)
       switch (newData.type) {
          case "delete":
@@ -164,7 +216,12 @@ function combineOldWithNew(newData) {
             break
          case "edit":
             if (singleFieldValues.includes(category)) oldData[myClass][category] = newData.data.newData
-            else oldData[myClass][category][newData.data.index] = newData.data.newData
+            else {
+               oldData[myClass][category][newData.data.index] = {
+                  ...newData.data.newData,
+                  isSecondHalf: checkIfDateIsInSecondHalf(newData.data.newData.date) || (newData.data.newData.wasFixed && checkIfDateIsInSecondHalf(newData.data.newData.dateFixed))
+               }
+            }
             break
          case "iEstimate":
          case "endedGrade":
@@ -195,26 +252,20 @@ function combineOldWithNew(newData) {
             }
             break
          default:
-            newData.data.isSecondHalf = checkIfDateIsInSecondHalf(newData.data.date)
+            if(typeMap.get(newData.type) == "grades") newData.data.isSecondHalf = checkIfDateIsInSecondHalf(newData.data.date)
             oldData[myClass][typeMap.get(newData.type)].push(newData.data)
       }
    }
    else massage = "Not right file."
-   if (!noChanges) writeMyFIleAndMakeBackup(newData.file, oldData, newData.type)
+   if (!noChanges) writeMyFileAndMakeBackup(newData.file, oldData, newData.type)
 }
 
-function writeMyFIleAndMakeBackup(itemName, data, action) {
+function writeMyFileAndMakeBackup(itemName, data, action) {
+   DATA[itemName] = data
    let text = JSON.stringify(data)
-   //main writing
-   fs.writeFile(
-      `${mainItemNameMap.get(itemName)}.json`,
-      text,
-      err => {
-         if (err) console.error(err)
-         else console.log(`MAIN: "${itemName}" has changed.`)
-      }
-   )
-   //backup writing
+   // writing to main
+   writeFileSchedule("number")
+   // backup writing
    let alternativeFileNumber = 0
    function writeFileAndCheck() {
       fs.writeFile(
@@ -235,6 +286,18 @@ function writeMyFIleAndMakeBackup(itemName, data, action) {
    writeFileAndCheck()
 }
 
+function writeToFile() {
+   numberOfRequestsToWriteFile = 0
+   const date = getNewDate()
+   fs.writeFile(
+      `OCENE.json`,
+      JSON.stringify(DATA.grades),
+      err => {
+         if (err) console.error(err)
+         else console.log(`MAIN: "grades" has changed: ${date.hour}:${date.minute}:${date.seconds}`)
+      }
+   )
+}
 function getNewDate() {
    let time = new Date
    function add0IfNeeded(timeData) {
@@ -242,6 +305,7 @@ function getNewDate() {
       else return timeData
    }
    return {
+      seconds: add0IfNeeded(time.getSeconds()),
       minute: add0IfNeeded(time.getMinutes()),
       hour: add0IfNeeded(time.getHours()),
       day: add0IfNeeded(time.getDate()),
@@ -257,9 +321,8 @@ function createName(fileFor, extraNumber, extraText) {
    let fileName = `${time.year}.${time.month}.${time.day}-${time.hour},${time.minute}-(${extraNumber})-${fileFor}-${extraText}`
    return fileName
 }
-
 function checkIfDateIsInSecondHalf(date) {
-   let [d,m,y] = date.split(".")
+   let [d, m, y] = date.split(".")
    if ((m > 1 || d > 15) && m < 8) return true
    else return false
 }
