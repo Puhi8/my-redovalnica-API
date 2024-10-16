@@ -14,5 +14,10 @@ module.exports = {
    endedGrade: ["grade"],
 //Things to go in the calender
    futureGrade: ["class", "type", "fixing", "date", "classroom", "time", "reminder_days", "material"],
-   futureThings: ["class", "type", "isGraded", "date", "time", "location", "reminder_days", "reminder_hours"]
+   futureThings: ["class", "type", "isGraded", "date", "time", "location", "reminder_days", "reminder_hours"],
+//settings 
+   settingsSent: ["type", "dataChanged", "data", "forMobile"],
+   displayNavbar: ["dates", "teachers", "final"],
+   displayGrades: ["class", "teacherName", "homework", "smallGrades", "plusMinus", "grades", "gradesSingle", "finalGrade", "computerEstimation", "estimation", "fixing"],
+   displayTeacher: ["name", "class", "homework", "ignoresFixedGrades", "smallGrades", "plusMinus", "percent"]
 }

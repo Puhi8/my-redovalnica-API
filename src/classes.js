@@ -1,1 +1,0 @@
-module.exports = ["MAT", "TJA", "SLJ", "NEM", "KEM", "BIO", "FIZ", "GEO", "ZGO", "LUM", "GUM", "SPO", "PSI", "SOC"]

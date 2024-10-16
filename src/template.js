@@ -1,19 +1,25 @@
 let aboutTestObject = {
    "allPoints": null,
-   "getPoints":null,
+   "getPoints": null,
    "percent": null
 }
 module.exports = {
    aboutTest: {
       "allPoints": null,
-      "getPoints":null,
+      "getPoints": null,
       "percent": null
    },
-   dataSent:{
+   dataSent: {
       "class": "",
       "file": "",
       "type": "",
-      "data":{}
+      "data": {}
+   },
+   settingsSent:{
+      "type": "settingsChange",
+      "dataChanged": "",
+      "forMobile": false,
+      "data": {}
    },
    class: {
       "iEstimate": null,
@@ -32,7 +38,7 @@ module.exports = {
       "convertSmallGrades": null,
       "convertPluses": null
    },
-   gradeWritten:{
+   gradeWritten: {
       "effective": null,
       "grade": null,
       "gradeExtra": 0,
@@ -41,7 +47,7 @@ module.exports = {
       "aboutTest": aboutTestObject,
       "wasFixed": false
    },
-   gradeTalk:{
+   gradeTalk: {
       "effective": null,
       "grade": null,
       "gradeExtra": 0,
@@ -49,50 +55,50 @@ module.exports = {
       "date": "",
       "wasFixed": false
    },
-   gradeWrittenFixed:{
+   gradeWrittenFixed: {
       "indexFixed": null,
       "gradeFixed": null,
-      "gradeExtraFixed":0,
+      "gradeExtraFixed": 0,
       "typeFixed": "",
       "dateFixed": "",
       "aboutTestFixed": aboutTestObject
    },
-   gradeTalkFixed:{
+   gradeTalkFixed: {
       "indexFixed": null,
       "gradeFixed": null,
-      "gradeExtraFixed":0,
+      "gradeExtraFixed": 0,
       "typeFixed": "",
       "dateFixed": ""
    },
-   plus_minus:{
+   plus_minus: {
       "type": "",
       "date": "",
-      "reason":""
+      "reason": ""
    },
-   smallGrade:{
+   smallGrade: {
       "grade": null,
       "date": "",
       "reason": ""
    },
-   homework:{
+   homework: {
       "date": ""
    },
-   delete:{
+   delete: {
       "category": "",
       "index": null
    },
-   edit:{
+   edit: {
       "category": "",
       "index": null,
       "newData": null
    },
-   iEstimate:{
+   iEstimate: {
       "grade": null
    },
-   endedGrade:{
+   endedGrade: {
       "grade": null
    },
-   futureGrade:{
+   futureGrade: {
       "class": "",
       "type": "",
       "fixing": null,
@@ -102,7 +108,7 @@ module.exports = {
       "reminder_days": null,
       "material": ""
    },
-   futureThings:{
+   futureThings: {
       "class": "",
       "type": "",
       "isGraded": null,
@@ -111,5 +117,34 @@ module.exports = {
       "location": "",
       "reminder_days": null,
       "reminder_hours": null
+   },
+   settings: {
+      displayNavbar: {
+         "dates": true,
+         "teachers": true,
+         "final": true
+      },
+      displayGrades: {
+         "class": true,
+         "teacherName": true,
+         "homework": true,
+         "smallGrades": true,
+         "plusMinus": true,
+         "grades": true,
+         "gradesSingle": false,
+         "finalGrade": true,
+         "computerEstimation": true,
+         "estimation": true,
+         "fixing": true
+      },
+      displayTeacher: {
+         "name": true,
+         "class": true,
+         "homework": true,
+         "ignoresFixedGrades": true,
+         "smallGrades": true,
+         "plusMinus": true,
+         "percent": true
+      }
    }
 }

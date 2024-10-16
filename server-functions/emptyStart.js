@@ -1,6 +1,8 @@
+const path = require("path")
+const myPath = path.join(__dirname, "..", "docker")
 const {writeFile} = require("fs")
-const allClasses = require("./src/classes")
-const templates = require("./src/template")
+const allClasses = require(path.join(myPath, "classes"))
+const templates = require("../src/template")
 
 let contents = {}
 allClasses.forEach(myClass=>{
@@ -13,7 +15,7 @@ allClasses.forEach(myClass=>{
    }
 })
 writeFile(
-   `OCENE.json`,
+   `../docker.OCENE.json`,
    JSON.stringify(contents),
    err => console.error(err)
 )
