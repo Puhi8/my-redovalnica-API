@@ -1,7 +1,8 @@
+const fs = require("fs")
 const path = require("path")
 const myPath = path.join(__dirname, "..", "docker")
 const {writeFile} = require("fs")
-const allClasses = require(path.join(myPath, "classes"))
+const allClasses = JSON.parse(fs.readFileSync(path.join(myPath, "classes.json"), "utf-8")).classes
 const templates = require("../src/template")
 
 let contents = {}
